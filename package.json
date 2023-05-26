@@ -4,7 +4,8 @@
   "description": "GoalSetter app",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/honorfoxont/mearnStack/issues"
   },
-  "homepage": "https://github.com/honorfoxont/mearnStack#readme"
+  "homepage": "https://github.com/honorfoxont/mearnStack",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
