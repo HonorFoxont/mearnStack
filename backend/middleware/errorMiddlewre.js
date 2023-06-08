@@ -3,7 +3,7 @@ const errorHandeler = (err, req, res, next) => {
   res.status(statusCode);
   res.json({
     messege: "input text feild",
-    stack: process.env.NODE_ENV === "production" ? nul : err.stack,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };
 
