@@ -9,6 +9,10 @@ const getGoals = (req, res) => {
 // @route   POST /api/goals
 // @access  private
 const setGoal = (req, res) => {
+  if (!req.body.text) {
+    res.statusCode = 400;
+    throw new Error("Input in text feild");
+  }
   res.json({ messege: `Set goals` });
 };
 
