@@ -1,11 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const Goals = require("../model/goalModel");
+const User = require("../model/userModel");
 
 // @desc    get goals
 // @route   GET /api/goals
 // @access  private
 const getGoals = asyncHandler(async (req, res) => {
-  const goals = await Goals.find();
+  const goals = await Goals.find({ user: req.user._id });
   res.json(goals);
 });
 
@@ -20,6 +21,7 @@ const setGoal = asyncHandler(async (req, res) => {
 
   const goal = await Goals.create({
     text: req.body.text,
+    user: req.user._id,
   });
   res.json(goal);
 });
@@ -29,6 +31,7 @@ const setGoal = asyncHandler(async (req, res) => {
 // @access  private
 const updateGoal = asyncHandler(async (req, res) => {
   const goal = await Goals.findById(req.params.id);
+
   if (!req.body.text) {
     res.status(400);
     throw new Error("Please input the text feild");
@@ -36,6 +39,23 @@ const updateGoal = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Goal doesen't Exist");
   }
+
+  //Getting user from database
+  const user = await User.findById(req.user._id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found!");
+  }
+
+  // Make sure the loggined user matches the goal user
+  if (user.id !== goal.user.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  //Updating goal
   const updatedGoal = await Goals.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
@@ -47,10 +67,28 @@ const updateGoal = asyncHandler(async (req, res) => {
 // @access  private
 const deleteGoal = asyncHandler(async (req, res) => {
   const goal = await Goals.findById(req.params.id);
+
   if (!goal) {
     res.status(400);
     throw new Error("Goal doesent Exist");
   }
+
+  //Getting user from database
+  const user = await User.findById(req.user._id);
+
+  //Check for user
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found!");
+  }
+
+  // Make sure the loggined user matches the goal user
+  if (user.id !== goal.user.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  //Deleting Goal
   await Goals.findByIdAndDelete(req.params.id);
   res.json({ id: req.params.id });
 });
